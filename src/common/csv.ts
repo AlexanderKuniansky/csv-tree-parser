@@ -1,5 +1,5 @@
-import https = require("https")
-import fs = require("fs")
+import * as https from "https"
+import * as fs from "fs"
 
 export class Csv {
   private url: string
