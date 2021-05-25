@@ -1,6 +1,6 @@
 {
   "name": "csv-tree-parser",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Downloads csv file, parses it and saves as JSON",
   "scripts": {
     "start": "ts-node ./src/app.ts",
@@ -17,7 +17,8 @@
   "author": "Alexander Kunianskyi",
   "license": "GPL-3.0",
   "dependencies": {
-    "csv-parse": "^4.15.4"
+    "csv-parse": "^4.15.4",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "@types/node": "^15.3.1",

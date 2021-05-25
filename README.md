@@ -34,5 +34,7 @@ Run with ts-node-dev:
 npm run dev
 ```
 
+P.S. JSON can be validated at: https://jsonformatter.curiousconcept.com/
+
 //TODO: add more info and more commands if/when tests are added
 //TODO: No error checking whatsoever, no bueno
