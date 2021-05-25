@@ -1,6 +1,6 @@
 {
   "name": "csv-tree-parser",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Downloads csv file, parses it and saves as JSON",
   "scripts": {
     "start": "ts-node ./src/app.ts",

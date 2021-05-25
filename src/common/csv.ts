@@ -1,6 +1,7 @@
 import * as fs from "fs"
 import * as parse from "csv-parse"
 import * as fetch from "node-fetch"
+import { Result } from "./types"
 
 export class Csv {
   private jsonString: string
@@ -9,7 +10,7 @@ export class Csv {
   private url: string
   private csvFileName: string
   private csvFolderPath: string
-  
+
   //Assumed that we always need csv from url when we create class
   constructor(
     url: string,
@@ -34,18 +35,20 @@ export class Csv {
   }
 
   private async CsvToArray() {
-    const parser = fs.createReadStream(this.csvFolderPath+this.csvFileName).pipe(
-      parse({
-        bom: true,
-        relax: true,
-        from: 4, //skip rows without data //11454 is the annoying row
-        escape: "\\"
-      })
-    )
+    const parser = fs
+      .createReadStream(this.csvFolderPath + this.csvFileName)
+      .pipe(
+        parse({
+          bom: true,
+          relax: true,
+          from: 4, //skip rows without data //11454 is the annoying row
+          escape: "\\"
+        })
+      )
     for await (const record of parser) {
-      // record length-1 to ignore the id collumn 
-      for (let i = 0; i < record.length - 1; i++) {        
-        if (record[i] !=="") {
+      // record length-1 to ignore the id collumn
+      for (let i = 0; i < record.length - 1; i++) {
+        if (record[i] !== "") {
           // Americans can't use metric system like normal people && They are too lazy  to escape characters => what can possibly go wrong
           // csv-parse (with "relax" option) doesn't remove quotes if there is an unescaped quote inside of string aka  `"text " here"` instead of  `text " here` hence this duck tape solution
           // either there is some combination of csv-parse options I missed or there is another parser that will work with this case or it can be done by hand but I am too lazy for that
@@ -68,23 +71,31 @@ export class Csv {
     //go through all records, in each record find all non null fields (avoiding las collumn with id's), use the found field to add category to the json
     for await (const record of this.records) {
       for (let i = 0; i < record.length - 1; i++) {
-        if (record[i] !=="") {
-        categoriesForestJsonBuilder.addCategory(
-          record[i],
-          record[record.length - 1],
-          i
-        )
+        if (record[i] !== "") {
+          categoriesForestJsonBuilder.addCategory(
+            record[i],
+            record[record.length - 1],
+            i
+          )
         }
       }
     }
     this.jsonString = categoriesForestJsonBuilder.getJsonString()
   }
-  saveJson(jsonFileName: string="result.json", jsonFolderPath: string="./categories/") {
-    fs.writeFileSync(jsonFolderPath+jsonFileName, this.jsonString)
+  saveJson(
+    jsonFileName: string = "result.json",
+    jsonFolderPath: string = "./categories/"
+  ) {
+    fs.writeFileSync(jsonFolderPath + jsonFileName, this.jsonString)
   }
-  async parse() {
+  async toJson() {
     await this.CsvToArray()
     await this.arrayToJson()
+    return this.jsonString
+  }
+  toResult() {
+    const result: Result = JSON.parse(this.jsonString)
+    return result
   }
 }
 
