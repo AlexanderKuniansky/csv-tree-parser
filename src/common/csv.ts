@@ -179,15 +179,15 @@ export class PathBuilder {
 
   findPath(searchValue) {
     this.searchValue = searchValue
-    let rawData = fs
+    let rawData: string = fs
       .readFileSync(this.jsonFolderPath + this.jsonFileName)
       .toString()
-    let jsonArray = JSON.parse(rawData)
+    let jsonArray: JSON[] = JSON.parse(rawData)
     //Cycle trough trees and search within each
     for (let i = 0; i < jsonArray.length; i++) {
       this.search(jsonArray[i])
     }
-    let result = this.generatedPath
+    let result: string = this.generatedPath
     this.reset()
     return result
   }
