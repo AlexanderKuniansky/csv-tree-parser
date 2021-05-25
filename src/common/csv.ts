@@ -161,3 +161,62 @@ class CategoriesForestJsonBuilder {
     this.head = 0
   }
 }
+
+export class PathBuilder {
+  private jsonFileName: string
+  private jsonFolderPath: string
+  private pathArray: string[] = []
+  private searchValue: string
+  private generatedPath: string = ""
+
+  constructor(
+    jsonFileName: string = "result.json",
+    jsonFolderPath: string = "./categories/"
+  ) {
+    this.jsonFileName = jsonFileName
+    this.jsonFolderPath = jsonFolderPath
+  }
+
+  findPath(searchValue) {
+    this.searchValue = searchValue
+    let rawData = fs
+      .readFileSync(this.jsonFolderPath + this.jsonFileName)
+      .toString()
+    let jsonArray = JSON.parse(rawData)
+    //Cycle trough trees and search within each
+    for (let i = 0; i < jsonArray.length; i++) {
+      this.search(jsonArray[i])
+    }
+    let result = this.generatedPath
+    this.reset()
+    return result
+  }
+  //Hello recursion my old friend...
+  search(categoriesTree, depth = 0) {
+    //Save the name to the array at the current depth as breadcrumbs to where we currently are
+    this.pathArray[depth] = categoriesTree.name
+    //If we found value => generated path, otherwise check if there is subSchemas, and if there is we dive deeper
+    if (categoriesTree.value == this.searchValue) {
+      this.pathGenerator(depth)
+      return
+    } else {
+      if (categoriesTree.hasOwnProperty("subSchemas")) {
+        for (let i = 0; i < categoriesTree.subSchemas.length; i++) {
+          this.search(categoriesTree.subSchemas[i], depth + 1)
+        }
+      }
+    }
+  }
+  pathGenerator(depth) {
+    //Build a path to the current depth, add last name in the end separately to avoid arrow
+    for (let i = 0; i < depth; i++) {
+      this.generatedPath += this.pathArray[i] + " > "
+    }
+    this.generatedPath += this.pathArray[depth]
+  }
+  //Can't say this is a clear reset but didn't want to make interface and reseting through new
+  reset() {
+    this.pathArray = []
+    this.generatedPath = ""
+  }
+}
