@@ -15,9 +15,9 @@ const pathBuilder = new PathBuilder()
   const path2 = pathBuilder.findPath(74469)
   //Just to show it functions
   console.log(result)
-  console.log(result[0].name)
-  console.log(result[0].value)
-  console.log(result[10].subSchemas[5].name)
-  console.log("This is a path: " + path)
-  console.log("This is another path: " + path2)
+  console.log(result[0].name) //Antiques
+  console.log(result[0].value) //20081
+  console.log(result[10].subSchemas[5].name) // Desktops & All-In-Ones
+  console.log("This is a path: " + path) //This is a path: Antiques > Asian Antiques > China > Brush Washers
+  console.log("This is another path: " + path2) //This is another path: Sporting Goods > Cycling > Electric Bicycles
 })()
